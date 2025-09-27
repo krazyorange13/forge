@@ -228,6 +228,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public Map<Card, Integer> assignCombatDamage(Card attacker, CardCollectionView blockers, CardCollectionView remaining, int damageDealt, GameEntity defender, boolean overrideOrder) {
+        System.out.println("AI ASSIGN COMBAT DAMAGE");
         return ComputerUtilCombat.distributeAIDamage(player, attacker, blockers, remaining, damageDealt, defender, overrideOrder);
     }
 
@@ -239,6 +240,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public Map<Byte, Integer> specifyManaCombo(SpellAbility sa, ColorSet colorSet, int manaAmount, boolean different) {
+        System.out.println("AI SPECIFY MANA COMBO");
         Map<Byte, Integer> result = new HashMap<>();
         for (int i = 0; i < manaAmount; ++i) {
             Byte chosen = chooseColor("", sa, colorSet);
@@ -256,6 +258,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public Integer announceRequirements(SpellAbility ability, String announce) {
+        System.out.println("AI ANNOUNCE REQUIREMENTS");
         // For now, these "announcements" are made within the AI classes of the appropriate SA effects
         if (ability.getApi() != null) {
             switch (ability.getApi()) {
@@ -288,21 +291,25 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public CardCollectionView choosePermanentsToSacrifice(SpellAbility sa, int min, int max, CardCollectionView validTargets, String message) {
+        System.out.println("AI CHOOSE PERMANENTS TO SACRIFICE");
         return ComputerUtil.choosePermanentsToSacrifice(player, validTargets, max, sa, false, min == 0);
     }
 
     @Override
     public CardCollectionView choosePermanentsToDestroy(SpellAbility sa, int min, int max, CardCollectionView validTargets, String message) {
+        System.out.println("AI CHOOSE PERMANENTS TO DESTROY");
         return ComputerUtil.choosePermanentsToSacrifice(player, validTargets, max, sa, true, min == 0);
     }
 
     @Override
     public CardCollectionView chooseCardsForEffect(CardCollectionView sourceList, SpellAbility sa, String title, int min, int max, boolean isOptional, Map<String, Object> params) {
+        System.out.println("AI CHOOSE CARDS FOR EFFECT");
         return brains.chooseCardsForEffect(sourceList, sa, min, max, isOptional, params);
     }
 
     @Override
     public List<Card> chooseContraptionsToCrank(List<Card> contraptions) {
+        System.out.println("AI CHOOSE CONTRAPTIONS TO CRANK");
         return CardLists.filter(contraptions, c -> {
             Trigger crankTrigger = IterableUtil.find(c.getTriggers(), t -> t.getMode() == TriggerType.CrankContraption);
             return confirmTrigger(new WrappedAbility(crankTrigger, crankTrigger.getOverridingAbility(), player));
@@ -311,6 +318,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public boolean helpPayForAssistSpell(ManaCostBeingPaid cost, SpellAbility sa, int max, int requested) {
+        System.out.println("AI HELP PAY FOR ASSIST SPELL");
         int toPay = getAi().attemptToAssist(sa, max, requested);
 
         if (toPay == 0) {
@@ -329,6 +337,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public Player choosePlayerToAssistPayment(FCollectionView<Player> optionList, SpellAbility sa, String title, int max) {
+        System.out.println("AI CHOOSE PLAYER TO ASSIST PAYMENT");
         //        if (optionList.size() == 1) {
         //            return null;
         //        }
@@ -349,6 +358,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public <T extends GameEntity> T chooseSingleEntityForEffect(FCollectionView<T> optionList, DelayedReveal delayedReveal, SpellAbility sa, String title, boolean isOptional, Player targetedPlayer, Map<String, Object> params) {
+        System.out.println("AI CHOOSE SINGLE ENTITY FOR EFFECT");
         if (delayedReveal != null) {
             reveal(delayedReveal.getCards(), delayedReveal.getZone(), delayedReveal.getOwner(), delayedReveal.getMessagePrefix());
         }
@@ -359,6 +369,7 @@ public class PlayerControllerAi extends PlayerController {
     public <T extends GameEntity> List<T> chooseEntitiesForEffect(
             FCollectionView<T> optionList, int min, int max, DelayedReveal delayedReveal, SpellAbility sa, String title,
             Player targetedPlayer, Map<String, Object> params) {
+        System.out.println("AI CHOOSE ENTITIES FOR EFFECT");
         if (delayedReveal != null) {
             reveal(delayedReveal.getCards(), delayedReveal.getZone(), delayedReveal.getOwner(), delayedReveal.getMessagePrefix());
         }
@@ -378,6 +389,7 @@ public class PlayerControllerAi extends PlayerController {
     @Override
     public List<SpellAbility> chooseSpellAbilitiesForEffect(List<SpellAbility> spells, SpellAbility sa, String title,
             int num, Map<String, Object> params) {
+        System.out.println("AI CHOOSE SPELL ABILITIES FOR EFFECT");
         List<SpellAbility> remaining = Lists.newArrayList(spells);
         List<SpellAbility> selecteds = Lists.newArrayList();
         SpellAbility selected;
@@ -394,27 +406,32 @@ public class PlayerControllerAi extends PlayerController {
     @Override
     public SpellAbility chooseSingleSpellForEffect(List<SpellAbility> spells, SpellAbility sa, String title,
             Map<String, Object> params) {
+        System.out.println("AI CHOOSE SINGLE SPELL FOR EFFECT");
         return SpellApiToAi.Converter.get(sa).chooseSingleSpellAbility(player, sa, spells, params);
     }
 
     @Override
     public boolean confirmAction(SpellAbility sa, PlayerActionConfirmMode mode, String message, List<String> options, Card cardToShow, Map<String, Object> params) {
+        System.out.println("AI CONFIRM ACTION");
         return getAi().confirmAction(sa, mode, message, params);
     }
 
     @Override
     public boolean confirmBidAction(SpellAbility sa, PlayerActionConfirmMode mode, String string,
             int bid, Player winner) {
+        System.out.println("AI CONFIRM BID ACTION");
         return getAi().confirmBidAction(sa, mode, string, bid, winner);
     }
 
     @Override
     public boolean confirmStaticApplication(Card hostCard, PlayerActionConfirmMode mode, String message, String logic) {
+        System.out.println("AI CONFIRM STATIC APPLICATION");
         return getAi().confirmStaticApplication(hostCard, logic);
     }
 
     @Override
     public boolean confirmTrigger(WrappedAbility wrapper) {
+        System.out.println("AI CONFIRM TRIGGER");
         final SpellAbility sa = wrapper.getWrappedAbility();
         //final Trigger regtrig = wrapper.getTrigger();
         if (wrapper.isMandatory()) {
@@ -455,21 +472,25 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public boolean confirmPayment(CostPart costPart, String prompt, SpellAbility sa) {
+        System.out.println("AI CONFIRM PAYMENT");
         return brains.confirmPayment(costPart); // AI is expected to know what it is paying for at the moment (otherwise add another parameter to this method)
     }
 
     @Override
     public boolean confirmReplacementEffect(ReplacementEffect replacementEffect, SpellAbility effectSA, GameEntity affected, String question) {
+        System.out.println("AI CONFIRM REPLACEMENT EFFECT");
         return brains.aiShouldRun(replacementEffect, effectSA, affected);
     }
 
     @Override
     public List<Card> exertAttackers(List<Card> attackers) {
+        System.out.println("AI EXERT ATTACKERS");
         return AiAttackController.exertAttackers(attackers, brains.getAttackAggression());
     }
  
     @Override
     public List<Card> enlistAttackers(List<Card> attackers) {
+        System.out.println("AI ENLIST ATTACKERS");
         CardCollection cards = CostEnlist.getCardsForEnlisting(brains.getPlayer());
         cards = CardLists.filter(cards, CardPredicates.hasGreaterPowerThan(0));
         CardCollection chosenAttackers = new CardCollection(attackers);
@@ -485,21 +506,25 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public CardCollection orderBlockers(Card attacker, CardCollection blockers) {
+        System.out.println("AI ORDER BLOCKERS");
         return AiBlockController.orderBlockers(attacker, blockers);
     }
 
     @Override
     public CardCollection orderBlocker(Card attacker, Card blocker, CardCollection oldBlockers) {
+        System.out.println("AI ORDER BLOCKER");
     	return AiBlockController.orderBlocker(attacker, blocker, oldBlockers);
     }
 
     @Override
     public CardCollection orderAttackers(Card blocker, CardCollection attackers) {
+        System.out.println("AI ORDER ATTACKERS");
         return AiBlockController.orderAttackers(blocker, attackers);
     }
 
     @Override
     public void reveal(CardCollectionView cards, ZoneType zone, Player owner, String messagePrefix, boolean addSuffix) {
+        System.out.println("AI REVEAL");
         for (Card c : cards) {
             AiCardMemory.rememberCard(player, c, AiCardMemory.MemorySet.REVEALED_CARDS);
         }
@@ -507,6 +532,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public void reveal(List<CardView> cards, ZoneType zone, PlayerView owner, String messagePrefix, boolean addSuffix) {
+        System.out.println("AI REVEAL");
         for (CardView cv : cards) {
             AiCardMemory.rememberCard(player, player.getGame().findByView(cv), AiCardMemory.MemorySet.REVEALED_CARDS);
         }
@@ -514,6 +540,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public ImmutablePair<CardCollection, CardCollection> arrangeForScry(CardCollection topN) {
+        System.out.println("AI ARRANGE FOR SCRY");
         CardCollection toBottom = new CardCollection();
         CardCollection toTop = new CardCollection();
 
@@ -535,6 +562,7 @@ public class PlayerControllerAi extends PlayerController {
      */
     @Override
     public ImmutablePair<CardCollection, CardCollection> arrangeForSurveil(CardCollection topN) {
+        System.out.println("AI ARRANGE FOR SURVEIL");
         CardCollection toGraveyard = new CardCollection();
         CardCollection toTop = new CardCollection();
 
@@ -558,6 +586,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public boolean willPutCardOnTop(Card c) {
+        System.out.println("AI WILL PUT CARD ON TOP");
         // This is used for Clash. Currently uses Scry logic to determine whether the card should be put on top.
         // Note that the AI does not know what will happen next (another clash or that would become his topdeck)
 
@@ -566,6 +595,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public CardCollectionView orderMoveToZoneList(CardCollectionView cards, ZoneType destinationZone, SpellAbility source) {
+        System.out.println("AI ORDER MOVE TO ZONE LIST");
         //TODO Add more logic for AI ordering here
 
         if (cards.isEmpty()) {
@@ -668,6 +698,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public CardCollection chooseCardsToDiscardFrom(Player p, SpellAbility sa, CardCollection validCards, int min, int max) {
+        System.out.println("AI CHOOSE CARDS TO DISCARD FROM");
         if (p == player) {
             return brains.getCardsToDiscard(min, max, validCards, sa);
         }
@@ -681,6 +712,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public void playSpellAbilityNoStack(SpellAbility effectSA, boolean canSetupTargets) {
+        System.out.println("AI PLAY SPELL ABILITY NO STACK");
         if (canSetupTargets)
             brains.doTrigger(effectSA, true); // first parameter does not matter, since return value won't be used
         ComputerUtil.playNoStack(player, effectSA, getGame(), true);
@@ -688,11 +720,13 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public CardCollectionView chooseCardsToDelve(int genericAmount, CardCollection grave) {
+        System.out.println("AI CHOOSE CARDS TO DELVE");
         return getAi().chooseCardsToDelve(genericAmount, grave);
     }
 
     @Override
     public CardCollectionView chooseCardsToDiscardUnlessType(int num, CardCollectionView hand, String uType, SpellAbility sa) {
+        System.out.println("AI CHOOSE CARDS TO DISCARD UNLESS TYPE");
         Iterable<Card> cardsOfType = IterableUtil.filter(hand, CardPredicates.restriction(uType.split(","), sa.getActivatingPlayer(), sa.getHostCard(), sa));
         if (!Iterables.isEmpty(cardsOfType)) {
             Card toDiscard = Aggregates.itemWithMin(cardsOfType, Card::getCMC);
@@ -708,6 +742,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public String chooseSomeType(String kindOfType, SpellAbility sa, Collection<String> validTypes, boolean isOptional) {
+        System.out.println("AI CHOOSE SOME TYPE");
         String chosen = ComputerUtil.chooseSomeType(player, kindOfType, sa, validTypes);
         if (StringUtils.isBlank(chosen) && !validTypes.isEmpty()) {
             chosen = validTypes.iterator().next();
@@ -718,6 +753,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public Object vote(SpellAbility sa, String prompt, List<Object> options, ListMultimap<Object, Player> votes, Player forPlayer, boolean optional) {
+        System.out.println("AI VOTE");
         return ComputerUtil.vote(player, options, sa, votes, forPlayer);
     }
 
@@ -728,6 +764,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public int chooseSprocket(Card assignee, boolean forceDifferent) {
+        System.out.println("AI CHOOSE SPROCKET");
         int nextSprocket = (player.getCrankCounter() % 3) + 1;
         if(forceDifferent && nextSprocket == assignee.getSprocket())
             return (nextSprocket % 3) + 1;
@@ -736,47 +773,55 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public PlanarDice choosePDRollToIgnore(List<PlanarDice> rolls) {
+        System.out.println("AI CHOOSE PD ROLL TO IGNORE");
         //TODO create AI logic for this
         return Aggregates.random(rolls);
     }
 
     @Override
     public Integer chooseRollToIgnore(List<Integer> rolls) {
+        System.out.println("AI CHOOSE ROLL TO IGNORE");
         //TODO create AI logic for this
         return Aggregates.random(rolls);
     }
 
     @Override
     public List<Integer> chooseDiceToReroll(List<Integer> rolls) {
+        System.out.println("AI CHOOSE DICE TO REROLL");
         //TODO create AI logic for this
         return new ArrayList<>();
     }
 
     @Override
     public Integer chooseRollToModify(List<Integer> rolls) {
+        System.out.println("AI CHOOSE ROLL TO MODIFY");
         //TODO create AI logic for this
         return Aggregates.random(rolls);
     }
 
     @Override
     public RollDiceEffect.DieRollResult chooseRollToSwap(List<RollDiceEffect.DieRollResult> rolls) {
+        System.out.println("AI CHOOSE ROLL TO SWAP");
         //TODO create AI logic for this
         return Aggregates.random(rolls);
     }
 
     @Override
     public String chooseRollSwapValue(List<String> swapChoices, Integer currentResult, int power, int toughness) {
+        System.out.println("AI CHOOSE ROLL SWAP VALUE");
         //TODO create AI logic for this
         return Aggregates.random(swapChoices);
     }
 
     @Override
     public boolean mulliganKeepHand(Player firstPlayer, int cardsToReturn)  {
+        System.out.println("AI MULLIGAN KEEP HAND");
         return !ComputerUtil.wantMulligan(player, cardsToReturn);
     }
 
     @Override
     public CardCollectionView londonMulliganReturnCards(final Player mulliganingPlayer, int cardsToReturn) {
+        System.out.println("AI LONDON MULLIGAN RETURN CARDS");
         // TODO This is better than it was before, but still suboptimal (but fast).
         // Maybe score a bunch of hands based on projected hand size and return the "duds"
         CardCollection hand = new CardCollection(player.getCardsIn(ZoneType.Hand));
@@ -823,21 +868,25 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public void declareAttackers(Player attacker, Combat combat) {
+        System.out.println("AI DECLARE ATTACKERS");
         brains.declareAttackers(attacker, combat);
     }
 
     @Override
     public void declareBlockers(Player defender, Combat combat) {
+        System.out.println("AI DECLARE BLOCKERS");
         brains.declareBlockersFor(defender, combat);
     }
 
     @Override
     public List<SpellAbility> chooseSpellAbilityToPlay() {
+        System.out.println("AI CHOOSE SPELL ABILITY TO PLAY");
         return brains.chooseSpellAbilityToPlay();
     }
 
     @Override
     public boolean playChosenSpellAbility(SpellAbility sa) {
+        System.out.println("AI PLAY CHOSEN SPELL ABILITY");
         if (sa.isLandAbility()) {
             if (sa.canPlay()) {
                 sa.resolve();
@@ -850,22 +899,26 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public CardCollection chooseCardsToDiscardToMaximumHandSize(int numDiscard) {
+        System.out.println("AI CHOOSE CARDS TO DISCARD TO MAXIMUM HAND SIZE");
         return brains.getCardsToDiscard(numDiscard, null, null);
     }
 
     @Override
     public CardCollection chooseCardsToRevealFromHand(int min, int max, CardCollectionView valid) {
+        System.out.println("AI CHOOSE CARDS TO REVEAL FROM HAND");
         int numCardsToReveal = Math.min(max, valid.size());
         return numCardsToReveal == 0 ? new CardCollection() : (CardCollection)valid.subList(0, numCardsToReveal);
     }
 
     @Override
     public Player chooseStartingPlayer(boolean isFirstgame) {
+        System.out.println("AI CHOOSE STARTING PLAYER");
         return this.player; // AI is brave :)
     }
 
     @Override
     public PlayerZone chooseStartingHand(List<PlayerZone> zones) {
+        System.out.println("AI CHOOSE STARTING HAND");
         // Rate all the hands using the AI's hand evaluation function
         int bestScore = Integer.MIN_VALUE;
         PlayerZone bestZone = null;
@@ -882,21 +935,25 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public List<SpellAbility> chooseSaToActivateFromOpeningHand(List<SpellAbility> usableFromOpeningHand) {
+        System.out.println("AI CHOOSE SA TO ACTIVATE FROM OPENING HAND");
         return brains.chooseSaToActivateFromOpeningHand(usableFromOpeningHand);
     }
 
     @Override
     public int chooseNumber(SpellAbility sa, String title, int min, int max) {
+        System.out.println("AI CHOOSE NUMBER");
         return brains.chooseNumber(sa, title, min, max);
     }
 
     @Override
     public int chooseNumber(SpellAbility sa, String string, int min, int max, Map<String, Object> params) {
+        System.out.println("AI CHOOSE NUMBER");
         return SpellApiToAi.Converter.get(sa).chooseNumber(player, sa, min, max, params);
     }
 
     @Override
     public int chooseNumber(SpellAbility sa, String title, List<Integer> options, Player relatedPlayer) {
+        System.out.println("AI CHOOSE NUMBER");
         return brains.chooseNumber(sa, title, options, relatedPlayer);
     }
 
@@ -905,6 +962,7 @@ public class PlayerControllerAi extends PlayerController {
      */
     @Override
     public boolean chooseFlipResult(SpellAbility sa, Player flipper, boolean[] results, boolean call) {
+        System.out.println("AI CHOOSE FLIP RESULT");
         if (call) {
             // Win if possible
             boolean result = false;
@@ -924,6 +982,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public Pair<SpellAbilityStackInstance, GameObject> chooseTarget(SpellAbility saSrc, List<Pair<SpellAbilityStackInstance, GameObject>> allTargets) {
+        System.out.println("AI CHOOSE TARGET");
         // TODO Teach AI how to determine the most damaging subability when retargeting a spell
         // with multiple targets (Arc Lightning, Cone of Flame, etc.) with Spellskite
         // (currently simply always returns the first valid target ability)
@@ -932,11 +991,13 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public void notifyOfValue(SpellAbility saSource, GameObject realtedTarget, String value) {
+        System.out.println("AI NOTIFY OF VALUE");
         // AI should take into consideration creature types, numbers and other information (mostly choices) arriving through this channel
     }
 
     @Override
     public boolean chooseBinary(SpellAbility sa, String question, BinaryChoiceType kindOfChoice, Boolean defaultVal) {
+        System.out.println("AI CHOOSE BINARY");
         switch (kindOfChoice) {
             case TapOrUntap: return true;
             case UntapOrLeaveTapped:
@@ -994,11 +1055,13 @@ public class PlayerControllerAi extends PlayerController {
      */
     @Override
     public boolean chooseBinary(SpellAbility sa, String question, BinaryChoiceType kindOfChoice, Map<String, Object> params) {
+        System.out.println("AI CHOOSE BINARY");
         return SpellApiToAi.Converter.get(sa).chooseBinary(kindOfChoice, sa, params);
     }
 
     @Override
     public List<AbilitySub> chooseModeForAbility(SpellAbility sa, List<AbilitySub> possible, int min, int num, boolean allowRepeat) {
+        System.out.println("AI CHOOSE MODE FOR ABILITY");
         List<AbilitySub> result = brains.chooseModeForAbility(sa, possible, min, num, allowRepeat);
         if (result != null) {
             return result;
@@ -1019,6 +1082,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public byte chooseColorAllowColorless(String message, Card card, ColorSet colors) {
+        System.out.println("AI CHOOSE COLOR ALLOW COLORLESS");
         final String c = ComputerUtilCard.getMostProminentColor(player.getCardsIn(ZoneType.Hand));
         byte chosenColorMask = MagicColor.fromName(c);
         if ((colors.getColor() & chosenColorMask) != 0) {
@@ -1029,6 +1093,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public byte chooseColor(String message, SpellAbility sa, ColorSet colors) {
+        System.out.println("AI CHOOSE COLOR");
         if (colors.countColors() < 2) {
             return Iterables.getFirst(colors, MagicColor.WHITE);
         }
@@ -1048,6 +1113,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public List<String> chooseColors(String message, SpellAbility sa, int min, int max, List<String> options) {
+        System.out.println("AI CHOOSE COLORS");
         return ComputerUtilCard.chooseColor(sa, min, max, options);
     }
 
@@ -1060,6 +1126,7 @@ public class PlayerControllerAi extends PlayerController {
     @Override
     public CounterType chooseCounterType(List<CounterType> options, SpellAbility sa, String prompt,
             Map<String, Object> params) {
+        System.out.println("AI CHOOSE COUNTER TYPE");
         // short cut if there is no options to choose
         if (options.size() <= 1) {
             return Iterables.getFirst(options, null);
@@ -1069,6 +1136,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public String chooseKeywordForPump(final List<String> options, final SpellAbility sa, final String prompt, final Card tgtCard) {
+        System.out.println("AI CHOOSE KEYWORD FOR PUMP");
         if (options.size() <= 1) {
             return Iterables.getFirst(options, null);
         }
@@ -1134,17 +1202,20 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public ReplacementEffect chooseSingleReplacementEffect(List<ReplacementEffect> possibleReplacers) {
+        System.out.println("AI CHOOSE SINGLE REPLACEMENT EFFECT");
         return brains.chooseSingleReplacementEffect(possibleReplacers);
     }
 
     @Override
     public StaticAbility chooseSingleStaticAbility(String prompt, List<StaticAbility> possibleStatics) {
+        System.out.println("AI CHOOSE SINGLE STATIC ABILITY");
         // only matters in corner cases
         return Iterables.getFirst(possibleStatics, null);
     }
 
     @Override
     public String chooseProtectionType(String string, SpellAbility sa, List<String> choices) {
+        System.out.println("AI CHOOSE PROTECTION TYPE");
         String choice = choices.get(0);
         SpellAbility hostsa = null;     //for Protect sub-ability
         if (getGame().stack.size() > 1) {
@@ -1208,11 +1279,13 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public boolean payManaCost(ManaCost toPay, CostPartMana costPartMana, SpellAbility sa, String prompt /* ai needs hints as well */, ManaConversionMatrix matrix, boolean effect) {
+        System.out.println("AI PAY MANA COST");
         return ComputerUtilMana.payManaCost(new Cost(toPay, effect), player, sa, effect);
     }
 
     @Override
     public boolean payCombatCost(Card c, Cost cost, SpellAbility sa, String prompt) {
+        System.out.println("AI PAY COMBAT COST");
         if (ComputerUtil.playNoStack(c.getController(), sa, getGame(), true)) {
             return true;
         }
@@ -1221,6 +1294,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public boolean payCostToPreventEffect(Cost cost, SpellAbility sa, boolean alreadyPaid, FCollectionView<Player> allPayers) {
+        System.out.println("AI PAY COST TO PREVENT EFFECT");
         if (SpellApiToAi.Converter.get(sa).willPayUnlessCost(sa, player, cost, alreadyPaid, allPayers)) {
             if (!ComputerUtilCost.canPayCost(cost, sa, player, true)) {
                 return false;
@@ -1233,12 +1307,14 @@ public class PlayerControllerAi extends PlayerController {
     }
 
     public boolean payCostDuringRoll(final Cost cost, final SpellAbility sa, final FCollectionView<Player> allPayers) {
+        System.out.println("AI PAY COST DURING ROLL");
         // TODO logic for AI to pay rerolls and modification costs
         return false;
     }
 
     @Override
     public void orderAndPlaySimultaneousSa(List<SpellAbility> activePlayerSAs) {
+        System.out.println("AI ORDER AND PLAY SIMULTANEOUS SA");
         for (final SpellAbility sa : getAi().orderPlaySa(activePlayerSAs)) {
             if (sa.isTrigger() && !sa.isCopied()) {
                 if (prepareSingleSa(sa.getHostCard(), sa, true)) {
@@ -1271,6 +1347,7 @@ public class PlayerControllerAi extends PlayerController {
     }
 
     private boolean prepareSingleSa(final Card host, final SpellAbility sa, boolean isMandatory) {
+        System.out.println("AI PREPARE SINGLE SA");
         if (sa.getApi() == ApiType.Charm) {
             return CharmEffect.makeChoices(sa);
         }
@@ -1285,6 +1362,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public boolean playTrigger(Card host, WrappedAbility wrapperAbility, boolean isMandatory) {
+        System.out.println("AI PLAY TRIGGER");
         if (prepareSingleSa(host, wrapperAbility, isMandatory)) {
             return ComputerUtil.playNoStack(wrapperAbility.getActivatingPlayer(), wrapperAbility, getGame(), true);
         }
@@ -1293,6 +1371,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public boolean playSaFromPlayEffect(SpellAbility tgtSA) {
+        System.out.println("AI PLAY SA FROM PLAY EFFECT");
         boolean optional = !tgtSA.getPayCosts().isMandatory();
         boolean noManaCost = tgtSA.hasParam("WithoutManaCost");
         if (tgtSA instanceof Spell spell) { // Isn't it ALWAYS a spell?
@@ -1307,17 +1386,20 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public boolean chooseTargetsFor(SpellAbility currentAbility) {
+        System.out.println("AI CHOOSE TARGETS FOR");
         return brains.doTrigger(currentAbility, true);
     }
 
     @Override
     public TargetChoices chooseNewTargetsFor(SpellAbility ability, Predicate<GameObject> filter, boolean optional) {
+        System.out.println("AI CHOOSE NEW TARGETS FOR");
         // AI currently can't do this. But when it can it will need to be based on Ability API
         return null;
     }
 
     @Override
     public boolean chooseCardsPile(SpellAbility sa, CardCollectionView pile1, CardCollectionView pile2, String faceUp) {
+        System.out.println("AI CHOOSE CARDS PILE");
         if (faceUp.equals("True")) {
             // AI will choose the first pile if it is larger or the same
             // TODO Improve this to be slightly more random to not be so predictable
@@ -1339,21 +1421,25 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public void revealAnte(String message, Multimap<Player, PaperCard> removedAnteCards) {
+        System.out.println("AI REVEAL ANTE");
         // Ai won't understand that anyway
     }
 
     @Override
     public void revealAISkipCards(String message, Map<Player, Map<DeckSection, List<? extends PaperCard>>> deckCards) {
+        System.out.println("AI REVEAL AI SKIP CARDS");
         // Ai won't understand that anyway
     }
 
     @Override
     public void revealUnsupported(Map<Player, List<PaperCard>> unsupported) {
+        System.out.println("AI REVEAL UNSUPPORTED");
         // Ai won't understand that anyway
     }
 
     @Override
     public Map<DeckSection, List<? extends PaperCard>> complainCardsCantPlayWell(Deck myDeck) {
+        System.out.println("AI COMPLAIN CARDS CANT PLAY WELL");
         // TODO check if profile detection set to Auto
         setupAutoProfile(myDeck);
 
@@ -1362,17 +1448,20 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public CardCollectionView cheatShuffle(CardCollectionView list) {
+        System.out.println("AI CHEAT SHUFFLE");
         return brains.getBooleanProperty(AiProps.CHEAT_WITH_MANA_ON_SHUFFLE) ? brains.cheatShuffle(list) : list;
     }
 
     @Override
     public List<PaperCard> chooseCardsYouWonToAddToDeck(List<PaperCard> losses) {
+        System.out.println("AI CHOOSE CARDS YOU WON TO ADD TO DECK");
         // TODO AI takes all by default
         return losses;
     }
 
     @Override
     public Map<Card, ManaCostShard> chooseCardsForConvokeOrImprovise(SpellAbility sa, ManaCost manaCost, CardCollectionView untappedCards, boolean improvise) {
+        System.out.println("AI CHOOSE CARDS TO CONVOKE OR IMPROVISE");
         final Player ai = sa.getActivatingPlayer();
         final PhaseHandler ph = ai.getGame().getPhaseHandler();
         //Filter out mana sources that will interfere with payManaCost()
@@ -1407,11 +1496,13 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public String chooseCardName(SpellAbility sa, List<ICardFace> faces, String message) {
+        System.out.println("AI CHOOSE CARD NAME");
         return SpellApiToAi.Converter.get(sa).chooseCardName(player, sa, faces);
     }
 
     @Override
     public String chooseCardName(SpellAbility sa, Predicate<ICardFace> cpp, String valid, String message) {
+        System.out.println("AI CHOOSE CARD NAME");
         if (sa.hasParam("AILogic")) {
             CardCollectionView aiLibrary = player.getCardsIn(ZoneType.Library);
             CardCollectionView oppLibrary = player.getStrongestOpponent().getCardsIn(ZoneType.Library);
@@ -1476,6 +1567,7 @@ public class PlayerControllerAi extends PlayerController {
     public Card chooseSingleCardForZoneChange(ZoneType destination,
             List<ZoneType> origin, SpellAbility sa, CardCollection fetchList, DelayedReveal delayedReveal,
             String selectPrompt, boolean isOptional, Player decider) {
+        System.out.println("AI CHOOSE SINGLE CARD FOR ZONE CHANGE");
         if (delayedReveal != null) {
             reveal(delayedReveal.getCards(), delayedReveal.getZone(), delayedReveal.getOwner(), delayedReveal.getMessagePrefix());
         }
@@ -1486,47 +1578,56 @@ public class PlayerControllerAi extends PlayerController {
     public List<Card> chooseCardsForZoneChange(
 	    ZoneType destination, List<ZoneType> origin, SpellAbility sa, CardCollection fetchList, int min, int max,
             DelayedReveal delayedReveal, String selectPrompt, Player decider) {
+        System.out.println("AI CHANGE CARDS FOR ZONE CHANGE");
         // this isn't used
         return null;
     }
 
     @Override
     public void resetAtEndOfTurn() {
+        System.out.println("AI RESET AT END OF TURN");
         // TODO - if card memory is ever used to remember something for longer than a turn, make sure it's not reset here.
         getAi().getCardMemory().clearAllRemembered();
     }
 
     @Override
     public void autoPassCancel() {
+        System.out.println("AI AUTO PASS CANCEL");
         // Do nothing
     }
 
     @Override
     public void awaitNextInput() {
+        System.out.println("AI AWAIT NEXT INPUT");
         // Do nothing
     }
     @Override
     public void cancelAwaitNextInput() {
+        System.out.println("AI CANCEL AWAIT NEXT INPUT");
         // Do nothing
     }
 
     @Override
     public ICardFace chooseSingleCardFace(SpellAbility sa, List<ICardFace> faces, String message) {
+        System.out.println("AI CHOOSE SINGLE CARD FACE");
         return SpellApiToAi.Converter.get(sa).chooseCardFace(player, sa, faces);
     }
 
     @Override
     public ICardFace chooseSingleCardFace(SpellAbility sa, String message, Predicate<ICardFace> cpp, String name) {
+        System.out.println("AI CHOOSE SINGLE CARD FACE");
         throw new UnsupportedOperationException("Should not be called for AI"); // or implement it if you know how
     }
 
     @Override
     public CardState chooseSingleCardState(SpellAbility sa, List<CardState> states, String message, Map<String, Object> params) {
+        System.out.println("AI CHOOSE SINGLE CARD STATE");
         return SpellApiToAi.Converter.get(sa).chooseCardState(player, sa, states, params);
     }
 
     @Override
     public Card chooseDungeon(Player ai, List<PaperCard> dungeonCards, String message) {
+        System.out.println("AI CHOOSE DUNGEON");
         // TODO: improve the conditions that define which dungeon is a viable option to choose
         List<String> dungeonNames = Lists.newArrayList();
         for (PaperCard pc : dungeonCards) {
@@ -1553,6 +1654,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public List<Card> chooseCardsForSplice(SpellAbility sa, List<Card> cards) {
+        System.out.println("AI CHOOSE CARDS FOR SPLICE");
         // sort from best to worst
         CardLists.sortByCmcDesc(cards);
 
@@ -1574,17 +1676,20 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public List<OptionalCostValue> chooseOptionalCosts(SpellAbility chosen, List<OptionalCostValue> optionalCostValues) {
+        System.out.println("AI CHOOSE OPTIONAL COSTS");
         return SpellApiToAi.Converter.get(chosen).chooseOptionalCosts(chosen, player, optionalCostValues);
     }
 
     @Override
     public boolean confirmMulliganScry(Player p) {
+        System.out.println("AI CONFIRM MULLIGAN SCRY");
         // Always true?
         return true;
     }
 
     @Override
     public int chooseNumberForKeywordCost(SpellAbility sa, Cost cost, KeywordInterface keyword, String prompt, int max) {
+        System.out.println("AI CHOOSE NUMBER FOR KEYWORD COST");
         // TODO: improve the logic depending on the keyword and the playability of the cost-modified SA (enough targets present etc.)
         if (keyword.getKeyword() == Keyword.CASUALTY
                 && "true".equalsIgnoreCase(sa.getHostCard().getSVar("AINoCasualtyPayment"))) {
@@ -1611,6 +1716,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public int chooseNumberForCostReduction(final SpellAbility sa, final int min, final int max) {
+        System.out.println("AI CHOOSE NUMBER FOR COST REDUCTION");
         return max;
     }
 
@@ -1621,6 +1727,7 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public CardCollection chooseCardsForEffectMultiple(Map<String, CardCollection> validMap, SpellAbility sa, String title, boolean isOptional) {
+        System.out.println("AI CHOOSE CARDS FOR EFFECT MULTIPLE");
         CardCollection choices = new CardCollection();
 
         for (String mapKey: validMap.keySet()) {
